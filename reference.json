@@ -1,0 +1,17 @@
+{
+    "key": [
+        {
+            "dog": "dog.jpg",
+            "number": 1234,
+            "text": "Burberry"
+        },
+        {
+            "source": "lrd_of_the_rings.jpg",
+            "number": 69
+        },
+        {
+            "source": "house.png",
+            "number": 841
+        }
+    ]
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday</title>
+    <style>
+      :root {
+        --bg1: #fff7d6;
+        --bg2: #ffb3c6;
+        --card: rgba(255, 255, 255, 0.55);
+        --text: #5d2a4d;
+        --accent: #ff6f91;
+        --accent-2: #ffc857;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, var(--bg1), var(--bg2));
+        color: var(--text);
+      }
+
+      .card {
+        width: min(90vw, 720px);
+        padding: 3rem 2rem;
+        border-radius: 28px;
+        background: var(--card);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 20px 50px rgba(93, 42, 77, 0.15);
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        background: rgba(255, 111, 145, 0.12);
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 0.78rem;
+      }
+
+      h1 {
+        margin: 1.25rem 0 0.75rem;
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        line-height: 1.1;
+        letter-spacing: 0.04em;
+      }
+
+      p {
+        margin: 0 auto;
+        max-width: 42rem;
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        line-height: 1.7;
+      }
+
+      .balloons {
+        margin-top: 2rem;
+        font-size: clamp(2rem, 5vw, 3rem);
+        letter-spacing: 0.4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <div class="badge">Celebration</div>
+      <h1>Happy Birthday</h1>
+      <p>Wishing you a day full of joy, laughter, cake, and unforgettable memories.</p>
+      <div class="balloons" aria-label="balloons">🎉🎂🎈✨</div>
+    </main>
+  </body>
+</html>
