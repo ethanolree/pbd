@@ -1,10 +1,13 @@
 {
   "name": "pbd",
   "version": "1.0.0",
-  "description": "Happy Birthday landing page",
-  "main": "server.js",
+  "private": true,
+  "description": "Happy Birthday static landing page",
   "scripts": {
-    "start": "node server.js"
+    "start": "npx serve ."
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.6"
+  }
 }
