@@ -1,7 +1,8 @@
 {
+    "output": "This is a test output",
     "key": [
         {
-            "dog": "dog.jpg",
+            "source": "dog.jpg",
             "number": 1234,
             "text": "Burberry"
         },

@@ -4,7 +4,7 @@
   "private": true,
   "description": "Happy Birthday static landing page",
   "scripts": {
-    "start": "npx serve ."
+    "start": "node server.js"
   },
   "license": "MIT",
   "devDependencies": {

@@ -18,7 +18,8 @@ const mimeTypes = {
 };
 
 const server = http.createServer((req, res) => {
-  const safePath = req.url === '/' ? '/index.html' : req.url;
+  const requestUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const safePath = requestUrl.pathname === '/' ? '/index.html' : requestUrl.pathname;
   const filePath = path.join(publicDir, safePath);
 
   if (!filePath.startsWith(publicDir)) {
@@ -37,7 +38,12 @@ const server = http.createServer((req, res) => {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = mimeTypes[ext] || 'application/octet-stream';
 
-    res.writeHead(200, { 'Content-Type': contentType });
+    res.writeHead(200, {
+      'Content-Type': contentType,
+      'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
     res.end(data);
   });
 });
