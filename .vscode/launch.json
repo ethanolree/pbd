@@ -5,7 +5,10 @@
       "name": "Run pbd app",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/server.js",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "start"
+      ],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "skipFiles": [

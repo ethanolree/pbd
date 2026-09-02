@@ -295,9 +295,87 @@
         color: var(--green);
       }
 
-      .success-screen {
+      .title-screen {
+        display: grid;
+        place-items: center;
         text-align: center;
-        padding: 2rem 1rem 0.8rem;
+        gap: 1rem;
+        min-height: 340px;
+        padding: 2rem 1.25rem;
+      }
+
+      .title-screen .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid rgba(103, 214, 255, 0.4);
+        background: rgba(103, 214, 255, 0.08);
+        color: var(--cyan);
+        font-size: 0.72rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      .title-screen h1 {
+        margin: 0;
+        font-size: clamp(1.7rem, 3vw, 2.8rem);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text);
+      }
+
+      .title-screen p {
+        margin: 0;
+        max-width: 540px;
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 0.96rem;
+      }
+
+      .rules-panel {
+        width: min(100%, 620px);
+        margin-top: 0.4rem;
+        padding: 1rem 1.1rem;
+        border-radius: 18px;
+        border: 1px solid rgba(103, 214, 255, 0.24);
+        background: rgba(8, 16, 28, 0.8);
+        box-shadow: inset 0 0 18px rgba(103, 214, 255, 0.05);
+      }
+
+      .rules-panel h2 {
+        margin: 0 0 0.8rem;
+        font-size: 0.78rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--cyan);
+      }
+
+      .rules-panel ol {
+        margin: 0;
+        padding-left: 1.2rem;
+        color: var(--muted);
+        line-height: 1.8;
+        text-align: left;
+      }
+
+      .rules-panel li + li {
+        margin-top: 0.15rem;
+      }
+
+      .cta-button {
+        margin-top: 0.4rem;
+        min-width: min(100%, 220px);
+        padding: 1rem 1.5rem;
+      }
+
+      .success-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1.2rem 1rem 0.6rem;
       }
 
       .success-screen h2 {
@@ -311,6 +389,75 @@
         color: var(--muted);
         margin: 0.25rem 0;
         font-size: 1.02rem;
+      }
+
+      .success-video-wrap {
+        position: relative;
+        width: min(100%, 700px);
+        margin: 0.8rem auto 0;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(103, 214, 255, 0.28);
+        box-shadow: 0 0 26px rgba(103, 214, 255, 0.12);
+        background: rgba(0, 0, 0, 0.45);
+        height: auto;
+        max-height: 1000px;
+        opacity: 1;
+        transition: opacity 1.2s ease, max-height 1.2s ease, margin 1.2s ease, border-width 1.2s ease, visibility 1.2s ease;
+      }
+
+      .success-video-wrap iframe {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border: 0;
+        background: #000;
+      }
+
+      .success-video-wrap.faded {
+        opacity: 0;
+        max-height: 0;
+        margin-top: 0;
+        border-width: 0;
+        visibility: hidden;
+      }
+
+      .winning-image {
+        display: block;
+        width: min(100%, 700px);
+        margin: 0 auto;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(103, 214, 255, 0.28);
+        box-shadow: 0 0 26px rgba(103, 214, 255, 0.12);
+        opacity: 0;
+        transform: scale(0.98);
+        transition: opacity 1.2s ease, transform 1.2s ease;
+        pointer-events: none;
+      }
+
+      .winning-image.visible {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .winning-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .success-video-fade {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(5, 8, 22, 0) 0%, rgba(5, 8, 22, 0.2) 45%, rgba(5, 8, 22, 0.9) 100%);
+        opacity: 0;
+        transition: opacity 1.6s ease;
+      }
+
+      .success-video-wrap.faded .success-video-fade {
+        opacity: 1;
       }
 
       .loader {
@@ -373,7 +520,9 @@
         currentIndex: 0,
         runningTotal: 0,
         fullShift: 0,
+        winning: '',
         solved: false,
+        started: false,
       };
 
       const gameArea = document.getElementById('gameArea');
@@ -490,6 +639,22 @@
             <h2>ACCESS GRANTED</h2>
             <p>Shift recovered: <strong>${state.runningTotal}</strong></p>
             <p>Message restored: <strong>${state.output}</strong></p>
+
+            <div class="success-video-wrap" id="successVideoWrap">
+              <iframe
+                id="successVideo"
+                src="https://www.youtube-nocookie.com/embed/MFCJ6qB26YA?autoplay=1&controls=0&fs=0&rel=0&modestbranding=1&playsinline=1&start=250&end=310&iv_load_policy=3&disablekb=1"
+                title="Success video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+              <div class="success-video-fade"></div>
+            </div>
+
+            <div class="winning-image" id="winningImageWrap" aria-live="polite">
+              <img src="./img/${state.winning || 'ticket.png'}" alt="Winning prize" />
+            </div>
           </div>
         `;
       }
@@ -513,9 +678,44 @@
         feedback.className = 'feedback';
       }
 
+      function renderTitleScreen() {
+        gameArea.innerHTML = `
+          <div class="title-screen">
+            <div class="badge">Mission Initializing</div>
+            <h1>Patricks Birthday Caesar Cipher Lock</h1>
+            <p>Crack the key, decode the transmission, and breach the final system before the signal fades.</p>
+
+            <div class="rules-panel">
+              <h2>How to play</h2>
+              <ol>
+                <li>Each clue image asks for a number or text answer based on the key data.</li>
+                <li>Every correct answer adds to your running shift total.</li>
+                <li>When all clues are solved, the full shift is revealed and you must decrypt the final message.</li>
+                <li>Enter the original message exactly to unlock the final screen.</li>
+              </ol>
+            </div>
+
+            <button id="startGameBtn" class="primary cta-button" type="button">Start Mission</button>
+          </div>
+        `;
+
+        const startGameBtn = document.getElementById('startGameBtn');
+        if (startGameBtn) {
+          startGameBtn.addEventListener('click', () => {
+            state.started = true;
+            render();
+          });
+        }
+      }
+
       function render() {
         updateShiftDisplay();
         updateCipherPreview();
+
+        if (!state.started) {
+          renderTitleScreen();
+          return;
+        }
 
         if (!state.key.length) {
           gameArea.innerHTML = '<div class="loader">Awaiting key data…</div>';
@@ -534,6 +734,38 @@
         }
 
         gameArea.innerHTML = buildSuccessMarkup();
+
+        const videoWrap = document.getElementById('successVideoWrap');
+        const winningImageWrap = document.getElementById('winningImageWrap');
+        const successVideo = document.getElementById('successVideo');
+
+        if (successVideo) {
+          successVideo.addEventListener('load', () => {
+            setTimeout(() => {
+              if (videoWrap) {
+                videoWrap.classList.add('faded');
+                setTimeout(() => {
+                  videoWrap.style.display = 'none';
+                }, 1200);
+              }
+
+              if (winningImageWrap) {
+                setTimeout(() => {
+                  winningImageWrap.classList.add('visible');
+                }, 250);
+              }
+            }, 60000);
+          }, { once: true });
+        }
+
+        if (videoWrap) {
+          setTimeout(() => {
+            videoWrap.classList.add('faded');
+            setTimeout(() => {
+              videoWrap.style.display = 'none';
+            }, 1200);
+          }, 60000);
+        }
       }
 
       function handleQuestionSubmit(event) {
@@ -634,10 +866,15 @@
 
           state.output = data.output || '';
           state.key = nextKey;
+          state.winning = data.winning || '';
           state.currentIndex = 0;
           state.runningTotal = 0;
           state.fullShift = computeFullShift(nextKey);
           state.solved = false;
+          if (!state.started) {
+            renderTitleScreen();
+            return;
+          }
           render();
         } catch (error) {
           gameArea.innerHTML = '<div class="loader">Unable to load cipher reference.</div>';
