@@ -385,6 +385,18 @@
         color: var(--green);
       }
 
+      .success-screen .final-message {
+        display: block;
+        margin: 0 auto 0.8rem;
+        width: min(100%, 720px);
+        color: var(--text);
+        font-size: 1.1rem;
+        letter-spacing: 0.04em;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        text-align: center;
+      }
+
       .success-screen p {
         color: var(--muted);
         margin: 0.25rem 0;
@@ -402,8 +414,14 @@
         background: rgba(0, 0, 0, 0.45);
         height: auto;
         max-height: 1000px;
-        opacity: 1;
+        opacity: 0;
+        visibility: hidden;
         transition: opacity 1.2s ease, max-height 1.2s ease, margin 1.2s ease, border-width 1.2s ease, visibility 1.2s ease;
+      }
+
+      .success-video-wrap.visible {
+        opacity: 1;
+        visibility: visible;
       }
 
       .success-video-wrap iframe {
@@ -516,6 +534,9 @@
     <script>
       const state = {
         output: '',
+        finalMessage: '',
+        prompt: '',
+        defaultInvalid: [],
         key: [],
         currentIndex: 0,
         runningTotal: 0,
@@ -531,6 +552,15 @@
 
       function normalizeText(value) {
         return String(value ?? '').trim().toLowerCase();
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
       }
 
       function caesarShift(text, shift) {
@@ -637,20 +667,10 @@
           <div class="success-screen">
             <div class="brand">SYSTEM BREACHED</div>
             <h2>ACCESS GRANTED</h2>
+            <p class="final-message">${escapeHtml(state.finalMessage || 'No final message available.')}</p>
             <p>Shift recovered: <strong>${state.runningTotal}</strong></p>
-            <p>Message restored: <strong>${state.output}</strong></p>
 
-            <div class="success-video-wrap" id="successVideoWrap">
-              <iframe
-                id="successVideo"
-                src="https://www.youtube-nocookie.com/embed/MFCJ6qB26YA?autoplay=1&controls=0&fs=0&rel=0&modestbranding=1&playsinline=1&start=250&end=310&iv_load_policy=3&disablekb=1"
-                title="Success video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
-              ></iframe>
-              <div class="success-video-fade"></div>
-            </div>
+            <div class="success-video-wrap" id="successVideoWrap" aria-live="polite"></div>
 
             <div class="winning-image" id="winningImageWrap" aria-live="polite">
               <img src="./img/${state.winning || 'ticket.png'}" alt="Winning prize" />
@@ -659,16 +679,19 @@
         `;
       }
 
-      const patrickErrorMessages = [
-        'Patrick, that answer is wrong. Try again.',
-        'Patrick, that signal is corrupted. Reset and retry.',
-        'Patrick, the decrypt is off. Recalibrate.',
-        'Patrick, wrong input. The system is not impressed.',
-        'Patrick, that guess failed. The lock stays sealed.'
-      ];
+      function getPatrickErrorMessage(item) {
+        const keySource = String(item?.source ?? '').trim();
+        const pool = Array.isArray(item?.invalid) && item.invalid.length
+          ? item.invalid
+          : (Array.isArray(state.defaultInvalid) && state.defaultInvalid.length
+            ? state.defaultInvalid
+            : [
+                'Patrick, that answer is wrong. Try again.',
+                'Patrick, that signal is corrupted. Reset and retry.',
+                'Patrick, the decrypt is off. Recalibrate.'
+              ]);
 
-      function getPatrickErrorMessage() {
-        return patrickErrorMessages[Math.floor(Math.random() * patrickErrorMessages.length)];
+        return pool[Math.floor(Math.random() * pool.length)];
       }
 
       function clearFeedback(form) {
@@ -679,11 +702,13 @@
       }
 
       function renderTitleScreen() {
+        const promptText = state.prompt || 'Crack the key, decode the transmission, and breach the final system before the signal fades.';
+
         gameArea.innerHTML = `
           <div class="title-screen">
             <div class="badge">Mission Initializing</div>
             <h1>Patricks Birthday Caesar Cipher Lock</h1>
-            <p>Crack the key, decode the transmission, and breach the final system before the signal fades.</p>
+            <p>${promptText}</p>
 
             <div class="rules-panel">
               <h2>How to play</h2>
@@ -737,17 +762,31 @@
 
         const videoWrap = document.getElementById('successVideoWrap');
         const winningImageWrap = document.getElementById('winningImageWrap');
-        const successVideo = document.getElementById('successVideo');
 
-        if (successVideo) {
-          successVideo.addEventListener('load', () => {
+        setTimeout(() => {
+          if (!videoWrap) return;
+
+          const iframe = document.createElement('iframe');
+          iframe.id = 'successVideo';
+          iframe.title = 'Success video';
+          iframe.src = 'https://www.youtube-nocookie.com/embed/MFCJ6qB26YA?autoplay=1&controls=0&fs=0&rel=0&modestbranding=1&playsinline=1&start=250&end=310&iv_load_policy=3&disablekb=1';
+          iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+          iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+          iframe.allowFullscreen = true;
+
+          const fade = document.createElement('div');
+          fade.className = 'success-video-fade';
+
+          videoWrap.appendChild(iframe);
+          videoWrap.appendChild(fade);
+          videoWrap.classList.add('visible');
+
+          iframe.addEventListener('load', () => {
             setTimeout(() => {
-              if (videoWrap) {
-                videoWrap.classList.add('faded');
-                setTimeout(() => {
-                  videoWrap.style.display = 'none';
-                }, 1200);
-              }
+              videoWrap.classList.add('faded');
+              setTimeout(() => {
+                videoWrap.style.display = 'none';
+              }, 1200);
 
               if (winningImageWrap) {
                 setTimeout(() => {
@@ -756,16 +795,14 @@
               }
             }, 60000);
           }, { once: true });
-        }
 
-        if (videoWrap) {
           setTimeout(() => {
             videoWrap.classList.add('faded');
             setTimeout(() => {
               videoWrap.style.display = 'none';
             }, 1200);
           }, 60000);
-        }
+        }, 10000);
       }
 
       function handleQuestionSubmit(event) {
@@ -795,7 +832,7 @@
             return;
           }
 
-          feedback.textContent = `ERROR: ${getPatrickErrorMessage()}`;
+          feedback.textContent = `ERROR: ${getPatrickErrorMessage(currentItem)}`;
           feedback.className = 'feedback error';
           return;
         }
@@ -812,7 +849,7 @@
           return;
         }
 
-        feedback.textContent = `ERROR: ${getPatrickErrorMessage()}`;
+        feedback.textContent = `ERROR: ${getPatrickErrorMessage(currentItem)}`;
         feedback.className = 'feedback error';
       }
 
@@ -833,7 +870,7 @@
           return;
         }
 
-        feedback.textContent = `ERROR: ${getPatrickErrorMessage()}`;
+        feedback.textContent = `ERROR: ${getPatrickErrorMessage({ source: 'default' })}`;
         feedback.className = 'feedback error';
       }
 
@@ -865,6 +902,9 @@
           const nextKey = Array.isArray(data.key) ? data.key : [];
 
           state.output = data.output || '';
+          state.finalMessage = data.final_message || '';
+          state.prompt = data.prompt || '';
+          state.defaultInvalid = Array.isArray(data.default_invalid) ? data.default_invalid : [];
           state.key = nextKey;
           state.winning = data.winning || '';
           state.currentIndex = 0;
