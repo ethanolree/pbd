@@ -469,39 +469,56 @@
         position: absolute;
         inset: 0;
         z-index: 3;
-        display: grid;
-        place-items: center;
-        cursor: pointer;
+        --play-hole-size: clamp(88px, 24vw, 108px);
+        pointer-events: none;
       }
 
-      .success-video-mask::before {
-        content: "";
+      .mask-block {
         position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at center, transparent 72px, rgba(5, 8, 22, 0.92) 76px);
+        background: rgba(5, 8, 22, 1);
+        pointer-events: auto;
       }
 
-      .mask-play-btn {
-        position: relative;
-        z-index: 1;
-        width: 88px;
-        height: 88px;
+      .mask-block.top {
+        top: 0;
+        left: 0;
+        right: 0;
+        height: calc(50% - (var(--play-hole-size) / 2));
+      }
+
+      .mask-block.bottom {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: calc(50% - (var(--play-hole-size) / 2));
+      }
+
+      .mask-block.left {
+        top: calc(50% - (var(--play-hole-size) / 2));
+        left: 0;
+        width: calc(50% - (var(--play-hole-size) / 2));
+        height: var(--play-hole-size);
+      }
+
+      .mask-block.right {
+        top: calc(50% - (var(--play-hole-size) / 2));
+        right: 0;
+        width: calc(50% - (var(--play-hole-size) / 2));
+        height: var(--play-hole-size);
+      }
+
+      .mask-hole-ring {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: var(--play-hole-size);
+        height: var(--play-hole-size);
+        transform: translate(-50%, -50%);
         border-radius: 50%;
-        border: 1px solid rgba(103, 214, 255, 0.7);
-        background: rgba(7, 17, 31, 0.9);
-        box-shadow: 0 0 26px rgba(103, 214, 255, 0.4), inset 0 0 18px rgba(103, 214, 255, 0.22);
-        display: grid;
-        place-items: center;
-      }
-
-      .mask-play-btn::before {
-        content: "";
-        width: 0;
-        height: 0;
-        border-top: 12px solid transparent;
-        border-bottom: 12px solid transparent;
-        border-left: 19px solid var(--cyan);
-        margin-left: 5px;
+        border: 2px solid rgba(103, 214, 255, 0.55);
+        box-shadow: 0 0 24px rgba(103, 214, 255, 0.28), inset 0 0 18px rgba(103, 214, 255, 0.14);
+        z-index: 1;
+        pointer-events: none;
       }
 
       .mask-caption {
@@ -518,6 +535,7 @@
         font-size: 0.7rem;
         letter-spacing: 0.14em;
         text-transform: uppercase;
+        pointer-events: none;
       }
 
       .success-video-wrap.faded {
@@ -901,8 +919,8 @@
         const winningImageWrap = document.getElementById('winningImageWrap');
         const videoDurationMs = 60000;
 
-        const buildVideoUrl = ({ autoplay = 0, muted = 1 } = {}) => (
-          `https://www.youtube-nocookie.com/embed/MFCJ6qB26YA?autoplay=${autoplay}&mute=${muted}&controls=0&fs=0&rel=0&modestbranding=1&playsinline=1&start=250&end=310&iv_load_policy=3&disablekb=1`
+        const buildVideoUrl = ({ autoplay = 0, muted = 0 } = {}) => (
+          `https://www.youtube-nocookie.com/embed/MFCJ6qB26YA?autoplay=${autoplay}&mute=${muted}&controls=0&fs=0&rel=0&modestbranding=1&playsinline=1&start=250&end=310&iv_load_policy=3&disablekb=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`
         );
 
         setTimeout(() => {
@@ -911,24 +929,39 @@
           const iframe = document.createElement('iframe');
           iframe.id = 'successVideo';
           iframe.title = 'Success video';
-          iframe.src = buildVideoUrl({ autoplay: 0, muted: 1 });
+          iframe.src = buildVideoUrl({ autoplay: 0, muted: 0 });
           iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
           iframe.referrerPolicy = 'strict-origin-when-cross-origin';
           iframe.allowFullscreen = true;
 
-          const mask = document.createElement('button');
-          mask.type = 'button';
+          const mask = document.createElement('div');
           mask.className = 'success-video-mask';
-          mask.setAttribute('aria-label', 'Play success video');
+          mask.setAttribute('aria-hidden', 'true');
 
-          const playBtn = document.createElement('span');
-          playBtn.className = 'mask-play-btn';
+          const topBlock = document.createElement('div');
+          topBlock.className = 'mask-block top';
+
+          const rightBlock = document.createElement('div');
+          rightBlock.className = 'mask-block right';
+
+          const bottomBlock = document.createElement('div');
+          bottomBlock.className = 'mask-block bottom';
+
+          const leftBlock = document.createElement('div');
+          leftBlock.className = 'mask-block left';
+
+          const holeRing = document.createElement('span');
+          holeRing.className = 'mask-hole-ring';
 
           const caption = document.createElement('span');
           caption.className = 'mask-caption';
-          caption.textContent = 'Tap to play';
+          caption.textContent = 'Tap center play button';
 
-          mask.appendChild(playBtn);
+          mask.appendChild(topBlock);
+          mask.appendChild(rightBlock);
+          mask.appendChild(bottomBlock);
+          mask.appendChild(leftBlock);
+          mask.appendChild(holeRing);
           mask.appendChild(caption);
 
           const fade = document.createElement('div');
@@ -952,11 +985,36 @@
             }
           };
 
-          mask.addEventListener('click', () => {
-            iframe.src = buildVideoUrl({ autoplay: 1, muted: 0 });
+          let startedFromIframeIntent = false;
+
+          const startAfterIframeIntent = () => {
+            if (startedFromIframeIntent) return;
+            startedFromIframeIntent = true;
             mask.remove();
             setTimeout(endVideoSequence, videoDurationMs);
-          }, { once: true });
+            iframe.removeEventListener('focus', startAfterIframeIntent);
+            videoWrap.removeEventListener('pointerdown', onWrapPointerDown, true);
+            window.removeEventListener('blur', onWindowBlur);
+          };
+
+          const onWrapPointerDown = (event) => {
+            if (event.target === iframe) {
+              startAfterIframeIntent();
+            }
+          };
+
+          const onWindowBlur = () => {
+            // Cross-origin iframe clicks usually blur the parent window.
+            setTimeout(() => {
+              if (document.activeElement === iframe) {
+                startAfterIframeIntent();
+              }
+            }, 0);
+          };
+
+          iframe.addEventListener('focus', startAfterIframeIntent);
+          videoWrap.addEventListener('pointerdown', onWrapPointerDown, true);
+          window.addEventListener('blur', onWindowBlur);
         }, 10000);
       }
 
