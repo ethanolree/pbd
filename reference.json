@@ -69,6 +69,36 @@
                 "Patrick, you've definitely been here before.",
                 "Patrick, the wrong door was chosen. Try again."
             ]
+        },
+        {
+            "source": "mt.jpg",
+            "number": 844,
+            "text": "Twilight Zone",
+            "invalid": [
+                "Patrick, this one is a classic.",
+                "Patrick, this one should get you in the zone.",
+                "Patrick, your lack of knowing is going to require a transfer."
+            ]
+        },
+        {
+            "source": "chnl.jpg",
+            "number": 845,
+            "text": "Chanel Ali",
+            "invalid": [
+                "Patrick, think designer bag.",
+                "Patrick, think famous boxer.",
+                "Patrick, it's funny that you're not getting this."
+            ]
+        },
+        {
+            "source": "cp.jpg",
+            "number": 1111,
+            "text": "Corn Pudding",
+            "invalid": [
+                "Patrick, this one is pretty tasty.",
+                "Patrick, who likes this?",
+                "Patrick, this one should be music to your ears."
+            ]
         }
     ],
     "final_message": "You did it! You cracked the code and got your key back! Now you can go on your date with your boyfriend. Have fun and enjoy the show!!!",
