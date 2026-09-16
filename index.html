@@ -469,7 +469,7 @@
         position: absolute;
         inset: 0;
         z-index: 3;
-        --play-hole-size: clamp(88px, 24vw, 108px);
+        --play-hole-size: clamp(80px, 22vw, 96px);
         pointer-events: none;
       }
 
@@ -986,11 +986,23 @@
           };
 
           let startedFromIframeIntent = false;
+          const isMobileInput = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+          const mobileMaskDelayMs = 5000;
 
           const startAfterIframeIntent = () => {
             if (startedFromIframeIntent) return;
             startedFromIframeIntent = true;
-            mask.remove();
+
+            if (isMobileInput) {
+              setTimeout(() => {
+                if (mask.isConnected) {
+                  mask.remove();
+                }
+              }, mobileMaskDelayMs);
+            } else {
+              mask.remove();
+            }
+
             setTimeout(endVideoSequence, videoDurationMs);
             iframe.removeEventListener('focus', startAfterIframeIntent);
             videoWrap.removeEventListener('pointerdown', onWrapPointerDown, true);
