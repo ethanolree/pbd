@@ -1,6 +1,6 @@
 {
     "prompt": "Patrick! You have a date with your boyfriend and he's coming to pick you up in Oak Park (where he thinks you live), but you're currently in Woodstock. Your old lady neighbor locked your car key in her apartment and you need to crack her super secret door password to get your key back. You have a list of clues that will help you figure out the password. The clues are in the form of images, numbers, and text. Use the clues to figure out the password and get your key back before your super handsome boyfriend arrives!",
-    "output": "Test",
+    "output": "Happy Birthday to the most handsome, funny, and smart boyfriend who I knew could solve this puzzle! I love you so much and I hope you have the best birthday!",
     "key": [
         {
             "source": "cfee.jpg",
@@ -20,6 +20,84 @@
                 "Patrick, this is a classic. You should know this one.",
                 "Patrick, I hope you didn't put a \"The\". It's not that serious.",
                 "Patrick, bffr."
+            ]
+        },
+        {
+            "source": "dog.jpg",
+            "number": 1234,
+            "text": "Burberry",
+            "invalid": [
+                "Patrick, you should definitely know this one.",
+                "Patrick, we're going to have some Beef if you don't get this. Retry.",
+                "Patrick, the design of this answer is off."
+            ]
+        },
+        {
+            "source": "laxro.jpg",
+            "number": 5678,
+            "text": "Fresca",
+            "invalid": [
+                "Patrick, do you really think I'm asking about the flavor here?",
+                "Patrick, yeah but what is this reallyyyy.",
+                "Patrick, hint: we drink these all the time."
+            ]
+        },
+        {
+            "source": "lrd_of_the_rings.jpg",
+            "number": 69,
+            "invalid": [
+                "Patrick, you're definitely overthinking this one.",
+                "Patrick, this one is a recycle. Try again.",
+                "Patrick, Bilbo would be disappointed."
+            ]
+        },
+        {
+            "source": "ram.jpg",
+            "number": 777,
+            "text": "Suffer as I have",
+            "invalid": [
+                "Patrick, hope you spelled it right.",
+                "Patrick, as if I'd just do the name of the character.",
+                "Patrick, watching you try to get the answer is suffering."
+            ]
+        },
+        {
+            "source": "house.png",
+            "number": 841,
+            "invalid": [
+                "Patrick, this place should look familiar.",
+                "Patrick, you've definitely been here before.",
+                "Patrick, the wrong door was chosen. Try again."
+            ]
+        },
+        {
+            "source": "mt.jpg",
+            "number": 844,
+            "text": "Twilight Zone",
+            "invalid": [
+                "Patrick, this one is a classic.",
+                "Patrick, this one should get you in the zone.",
+                "Patrick, your lack of knowing is going to require a transfer."
+            ]
+        },
+        {
+            "source": "chnl.jpg",
+            "number": 845,
+            "text": "Chanel Ali",
+            "invalid": [
+                "Patrick, think designer bag.",
+                "Patrick, think famous boxer.",
+                "Patrick, it's funny that you're not getting this."
+            ]
+        },
+        {
+            "source": "cp.jpg",
+            "number": 1111,
+            "text": "Corn Pudding",
+            "invalid": [
+                "Patrick, this one is pretty tasty.",
+                "Patrick, who likes this?",
+                "Patrick, this one should be music to your ears."
             ]
         }
     ],

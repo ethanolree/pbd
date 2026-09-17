@@ -1,0 +1,35 @@
+{
+    "prompt": "Patrick! You have a date with your boyfriend and he's coming to pick you up in Oak Park (where he thinks you live), but you're currently in Woodstock. Your old lady neighbor locked your car key in her apartment and you need to crack her super secret door password to get your key back. You have a list of clues that will help you figure out the password. The clues are in the form of images, numbers, and text. Use the clues to figure out the password and get your key back before your super handsome boyfriend arrives!",
+    "output": "Test",
+    "key": [
+        {
+            "source": "cfee.jpg",
+            "number": 42,
+            "text": "Cupitol",
+            "invalid": [
+                "Patrick, this is supposed to be an easy one.",
+                "Patrick, this is closer than you might think.",
+                "Patrick, I didn't think this was that much of a callback."
+            ]
+        },
+        {
+            "source": "rolls.jpg",
+            "number": 100,
+            "text": "Dearborn",
+            "invalid": [
+                "Patrick, this is a classic. You should know this one.",
+                "Patrick, I hope you didn't put a \"The\". It's not that serious.",
+                "Patrick, bffr."
+            ]
+        }
+    ],
+    "final_message": "You did it! You cracked the code and got your key back! Now you can go on your date with your boyfriend. Have fun and enjoy the show!!!",
+    "default_invalid": [
+        "Patrick, that answer is wrong. Try again.",
+        "Patrick, that signal is corrupted. Reset and retry.",
+        "Patrick, the decrypt is off. Recalibrate.",
+        "Patrick, wrong input. The system is not impressed.",
+        "Patrick, that guess failed. The lock stays sealed."
+    ],
+    "winning": "ticket.png"
+}
